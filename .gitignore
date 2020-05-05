@@ -1,0 +1,19 @@
+*.db
+*.egg-info
+*.pyc
+/.cache
+/.coverage
+
+# Dir
+/build
+/dist
+/pyenv
+/venv
+
+# Environment Files
+/.env
+
+# IDE Fragments
+/.vscode
+*__pycache__*
+*.idea*
