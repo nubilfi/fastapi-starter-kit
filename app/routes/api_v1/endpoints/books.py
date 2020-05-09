@@ -1,7 +1,7 @@
 """
 Basic endpoint: /books
 """
-from typing import List
+from typing import List, Generator
 from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_201_CREATED
@@ -16,7 +16,7 @@ router = APIRouter()
 #pylint: enable=invalid-name
 
 
-def db_session():
+def db_session() -> Generator:
     """
     Get database connection with DI (Dependencies Injection)
     """
@@ -27,14 +27,14 @@ def db_session():
         dbsession.close()
 
 
-@router.get('/books', response_model=List[BooksBase])
+@router.get("/", response_model=List[BooksBase])
 def get_all_books(sql: Session = Depends(db_session)):
     """return books record"""
     result = get_books(sql)
     return result
 
 
-@router.get("/books/{book_id}", response_model=BooksBase)
+@router.get("/{book_id}", response_model=BooksBase)
 def get_book_by_id(
         book_id: int = Path(..., title="The Id of the book to get", ge=0),
         sql: Session = Depends(db_session)
@@ -48,7 +48,7 @@ def get_book_by_id(
     return result
 
 
-@router.post("/books", response_model=BooksAction, status_code=HTTP_201_CREATED)
+@router.post("/", response_model=BooksAction, status_code=HTTP_201_CREATED)
 def add_new_book(newbook: BooksAction, sql: Session = Depends(db_session)):
     """
     Create a book with all the information:
@@ -60,7 +60,7 @@ def add_new_book(newbook: BooksAction, sql: Session = Depends(db_session)):
     return result
 
 
-@router.put("/books/{book_id}", response_model=BooksAction)
+@router.put("/{book_id}", response_model=BooksAction)
 def update_book_by_id(
         book: BooksAction,
         book_id: int = Path(...,
@@ -82,7 +82,7 @@ def update_book_by_id(
     return result
 
 
-@router.delete("/books/{book_id}")
+@router.delete("/{book_id}")
 def delete_book_by_id(
         book_id: int = Path(...,
                             title="The Id of the book to be deleted", ge=0),

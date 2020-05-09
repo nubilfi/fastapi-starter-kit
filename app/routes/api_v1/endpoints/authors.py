@@ -1,7 +1,7 @@
 """
 Basic endpoint: /authors
 """
-from typing import List
+from typing import List, Generator
 from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_201_CREATED
@@ -16,7 +16,7 @@ router = APIRouter()
 #pylint: enable=invalid-name
 
 
-def db_session():
+def db_session() -> Generator:
     """
     Get database connection with DI (Dependencies Injection)
     """
@@ -27,14 +27,14 @@ def db_session():
         dbsession.close()
 
 
-@router.get('/authors', response_model=List[AuthorsBase])
+@router.get("/", response_model=List[AuthorsBase])
 def get_all_authors(sql: Session = Depends(db_session)):
     """return authors record"""
     result = get_authors(sql)
     return result
 
 
-@router.get("/authors/{author_id}", response_model=AuthorsBase)
+@router.get("/{author_id}", response_model=AuthorsBase)
 def get_author_by_id(
         author_id: int = Path(..., title="The Id of the author to get", ge=0),
         sql: Session = Depends(db_session)
@@ -48,7 +48,7 @@ def get_author_by_id(
     return result
 
 
-@router.post("/authors", response_model=AuthorsAction, status_code=HTTP_201_CREATED)
+@router.post("/", response_model=AuthorsAction, status_code=HTTP_201_CREATED)
 def add_new_author(newauthor: AuthorsAction, sql: Session = Depends(db_session)):
     """
     Create a author with all the information:
@@ -59,7 +59,7 @@ def add_new_author(newauthor: AuthorsAction, sql: Session = Depends(db_session))
     return result
 
 
-@router.put("/authors/{author_id}", response_model=AuthorsAction)
+@router.put("/{author_id}", response_model=AuthorsAction)
 def update_author_by_id(
         author: AuthorsAction,
         author_id: int = Path(...,
@@ -80,7 +80,7 @@ def update_author_by_id(
     return result
 
 
-@router.delete("/authors/{author_id}")
+@router.delete("/{author_id}")
 def delete_author_by_id(
         author_id: int = Path(...,
                               title="The Id of the author to be deleted", ge=0),

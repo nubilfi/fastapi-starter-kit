@@ -6,22 +6,25 @@ import sys
 sys.path.extend(["./"])
 
 #pylint: disable=wrong-import-position
+from starlette.middleware.cors import CORSMiddleware
+
 from app.main import app
-from app.routes.basic import router as basic_router
-from app.routes.cars import router as cars_router
-from app.routes.authors import router as authors_router
-from app.routes.books import router as books_router
+from app.routes.api_v1.api import routers
 from app.config import set_dotenv
 #pylint: enable=wrong-import-position
 
 set_dotenv()
 
-ROUTERS = (basic_router, cars_router, authors_router, books_router)
+# Set all CORS enabled origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-app.include_router(ROUTERS[0], tags=["Basic"])
-app.include_router(ROUTERS[1], tags=["Cars"])
-app.include_router(ROUTERS[2], tags=["Authors"])
-app.include_router(ROUTERS[3], tags=["Books"])
+app.include_router(routers, prefix=getenv("API_PREFIX"))
 
 if __name__ == "__main__":
     import uvicorn
