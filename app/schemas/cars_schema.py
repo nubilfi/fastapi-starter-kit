@@ -1,6 +1,7 @@
 """
 It is a Pydantic model for Cars
 """
+from typing import Optional
 from pydantic import BaseModel, Field
 
 
@@ -8,7 +9,7 @@ class CarsBase(BaseModel):
     """
     A schema class used to represent Cars table column values
     """
-    Id: int
+    Id: Optional[int] = None
     Name: str
     Price: int = Field(..., gt=0,
                        description="The price must be greated than zero")

@@ -1,49 +1,68 @@
 """
 It is a Pydantic model for Users
 """
-from pydantic import BaseModel
+from typing import Optional
+from pydantic import BaseModel, EmailStr
 
 
-class Users(BaseModel):
+class UsersBase(BaseModel):
     """
     A schema class used to represent Users table column values
     """
-    UserId: int = None
-
-    class Config:
-        """
-        Instead of using id = data["id"]
-        replace it with id = data.id
-        """
-        orm_mode = True
-
-
-class UsersBase(Users):
-    """
-    A schema class used to represent Users table column values
-    """
-    Username: str
-    Fullname: str = None
-    Email: str
+    Username: Optional[str] = None
+    Fullname: Optional[str] = None
+    Email: Optional[EmailStr] = None
     Status: bool = None
 
     class Config:
         """
-        Instead of using id = data["id"]
-        replace it with id = data.id
+        Instead of using username = data["Username"]
+        replace it with username = data.Username
         """
         orm_mode = True
 
 
-class UsersAction(UsersBase):
+class UsersCreate(UsersBase):
     """
     A schema class used to represent column to create a new user
     """
+    Username: str
     Password: str
 
     class Config:
-        """
-        Instead of using id = data["id"]
-        replace it with id = data.id
-        """
+        """enable orm mode"""
         orm_mode = True
+
+
+class UsersUpdate(UsersBase):
+    """
+    A schema class used to update user password
+    """
+    Password: Optional[str] = None
+
+    class Config:
+        """enable orm mode"""
+        orm_mode = True
+
+
+class UsersInDBBase(UsersBase):
+    """
+    A schema class used to represent user data based on its ID
+    """
+    UserId: Optional[int] = None
+
+    class Config:
+        """enable orm mode"""
+        orm_mode = True
+
+
+class User(UsersInDBBase):
+    """
+    Provide a user data
+    """
+    pass #pylint: disable=unnecessary-pass
+
+
+class UsersInDB(UsersInDBBase):
+    """Store hashed password through this property"""
+    Password: str
