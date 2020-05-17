@@ -9,7 +9,9 @@ from starlette.status import HTTP_201_CREATED
 from app.controllers.authors_controller import (
     get_authors, get_author, create_author, update_author, delete_author)
 from app.schemas.authors_schema import AuthorsBase, AuthorsAction
+from app.schemas.users_schema import UsersBase
 from app.settings.mysql_settings import SessionLocal
+from app.utils.auth import get_current_active_user
 
 #pylint: disable=invalid-name
 router = APIRouter()
@@ -28,8 +30,14 @@ def db_session() -> Generator:
 
 
 @router.get("/", response_model=List[AuthorsBase])
-def get_all_authors(sql: Session = Depends(db_session)):
+def get_all_authors(
+        sql: Session = Depends(db_session),
+        current_user: UsersBase = Depends(get_current_active_user)
+):
     """return authors record"""
+    if current_user.Status:
+        raise HTTPException(status_code=400, detail="Inactive user")
+
     result = get_authors(sql)
     return result
 
@@ -37,9 +45,13 @@ def get_all_authors(sql: Session = Depends(db_session)):
 @router.get("/{author_id}", response_model=AuthorsBase)
 def get_author_by_id(
         author_id: int = Path(..., title="The Id of the author to get", ge=0),
-        sql: Session = Depends(db_session)
+        sql: Session = Depends(db_session),
+        current_user: UsersBase = Depends(get_current_active_user)
 ):
     """return a specific author record"""
+    if current_user.Status:
+        raise HTTPException(status_code=400, detail="Inactive user")
+
     result = get_author(sql, author_id=author_id)
 
     if result is None:
@@ -49,12 +61,19 @@ def get_author_by_id(
 
 
 @router.post("/", response_model=AuthorsAction, status_code=HTTP_201_CREATED)
-def add_new_author(newauthor: AuthorsAction, sql: Session = Depends(db_session)):
+def add_new_author(
+        newauthor: AuthorsAction,
+        sql: Session = Depends(db_session),
+        current_user: UsersBase = Depends(get_current_active_user)
+):
     """
     Create a author with all the information:
 
     - **name**: must have a name
     """
+    if current_user.Status:
+        raise HTTPException(status_code=400, detail="Inactive user")
+
     result = create_author(sql, author=newauthor)
     return result
 
@@ -64,7 +83,8 @@ def update_author_by_id(
         author: AuthorsAction,
         author_id: int = Path(...,
                               title="The Id of the author to be updated", ge=0),
-        sql: Session = Depends(db_session)
+        sql: Session = Depends(db_session),
+        current_user: UsersBase = Depends(get_current_active_user)
 ):
     """
     update a author with all the information:
@@ -72,6 +92,9 @@ def update_author_by_id(
     - **id**: set the Id of the author, it's required
     - **name**: must have a name
     """
+    if current_user.Status:
+        raise HTTPException(status_code=400, detail="Inactive user")
+
     result = update_author(sql, author_id=author_id, author=author)
 
     if result is None:
@@ -84,9 +107,12 @@ def update_author_by_id(
 def delete_author_by_id(
         author_id: int = Path(...,
                               title="The Id of the author to be deleted", ge=0),
-        sql: Session = Depends(db_session)
+        sql: Session = Depends(db_session),
+        current_user: UsersBase = Depends(get_current_active_user)
 ):
     """delete a specific author"""
-    result = delete_author(sql, author_id=author_id)
+    if current_user.Status:
+        raise HTTPException(status_code=400, detail="Inactive user")
 
+    result = delete_author(sql, author_id=author_id)
     return result

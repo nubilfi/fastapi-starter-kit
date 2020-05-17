@@ -10,6 +10,7 @@ from app.config import set_dotenv
 
 set_dotenv()
 
+#pylint: disable=invalid-name
 if getenv('APP_MODE') == 'TESTING':
     # modify the following connection string
     SQLALCHEMY_DATABASE_URL = "mysql://root:1234@172.17.0.1/mytest"
@@ -17,6 +18,7 @@ else:
     # pylint: disable=line-too-long
     SQLALCHEMY_DATABASE_URL = f"mysql://{getenv('DB_USER')}:{getenv('DB_PASSWORD')}@{getenv('DB_HOST')}/{getenv('DB_NAME')}"
     # pylint: enable=line-too-long
+#pylint: enable=invalid-name
 
 # pylint: disable=invalid-name
 engine = create_engine(SQLALCHEMY_DATABASE_URL)

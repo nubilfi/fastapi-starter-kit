@@ -5,7 +5,7 @@ from typing import Generator
 
 from fastapi import APIRouter, Depends
 
-from app.routes.api_v1.endpoints.signin import get_current_active_user
+from app.utils.auth import get_current_active_user
 from app.schemas.users_schema import UsersBase
 from app.settings.mysql_settings import SessionLocal
 
@@ -25,13 +25,15 @@ def db_session() -> Generator:
         dbsession.close()
 
 
-@router.get("/me/", response_model=UsersBase, response_model_exclude_unset=True)
-async def read_users_me(current_user: UsersBase = Depends(get_current_active_user)):
+@router.get("/profile/", response_model=UsersBase, response_model_exclude_unset=True)
+def read_users_me(current_user: UsersBase = Depends(get_current_active_user)):
+    """retrieve signed user data"""
     return current_user
 
 
-@router.get("/me/items/")
-async def read_own_items(current_user: UsersBase = Depends(get_current_active_user)):
+@router.get("/profile/items/")
+def read_own_items(current_user: UsersBase = Depends(get_current_active_user)):
+    """return misc item"""
     return [{"item_id": "Foo", "owner": current_user.Username}]
 
 
