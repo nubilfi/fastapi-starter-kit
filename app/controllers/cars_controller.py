@@ -4,7 +4,7 @@ Provide logic for /cars endpoint
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
-from app.schemas.cars_schema import CarActions
+from app.schemas.cars_schema import CarsCreate, CarsUpdate
 from app.models.cars_model import Cars
 
 
@@ -18,7 +18,7 @@ def get_car(sql: Session, car_id: int):
     return sql.query(Cars).filter(Cars.Id == car_id).first()
 
 
-def create_car(sql: Session, car: CarActions):
+def create_car(sql: Session, car: CarsCreate):
     """
     Create a record of car with its Name & Price
     """
@@ -32,16 +32,20 @@ def create_car(sql: Session, car: CarActions):
     return new_car
 
 
-def update_car(sql: Session, car_id: int, car: CarActions):
+def update_car(sql: Session, car_id: int, car: CarsUpdate):
     """
     Update a specific car
     """
     old_data = sql.query(Cars).filter(Cars.Id == car_id).first()
 
+
     if old_data is not None:
         new_data = car.dict()
-        old_data.Name = new_data["Name"]
-        old_data.Price = new_data["Price"]
+
+        if new_data["Name"] and old_data.Name != new_data["Name"]:
+            old_data.Name = new_data["Name"]
+        if new_data["Price"] and old_data.Price != new_data["Price"]:
+            old_data.Price = new_data["Price"]
 
         sql.commit()
 

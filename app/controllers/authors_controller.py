@@ -4,7 +4,7 @@ Provide logic for /authors endpoint
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
-from app.schemas.authors_schema import AuthorsAction
+from app.schemas.authors_schema import AuthorsCreate, AuthorsUpdate
 from app.models.authors_model import Authors
 
 
@@ -18,7 +18,7 @@ def get_author(sql: Session, author_id: int):
     return sql.query(Authors).filter(Authors.AuthorId == author_id).first()
 
 
-def create_author(sql: Session, author: AuthorsAction):
+def create_author(sql: Session, author: AuthorsCreate):
     """
     Create a record of author with its Name
     """
@@ -31,7 +31,7 @@ def create_author(sql: Session, author: AuthorsAction):
     return new_author
 
 
-def update_author(sql: Session, author_id: int, author: AuthorsAction):
+def update_author(sql: Session, author_id: int, author: AuthorsUpdate):
     """
     Update a specific author
     """

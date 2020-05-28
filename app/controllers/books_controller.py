@@ -4,7 +4,7 @@ Provide logic for /books endpoint
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
-from app.schemas.books_schema import BooksAction
+from app.schemas.books_schema import BooksCreate, BooksUpdate
 from app.models.books_model import Books
 
 
@@ -18,7 +18,7 @@ def get_book(sql: Session, book_id: int):
     return sql.query(Books).filter(Books.BookId == book_id).first()
 
 
-def create_book(sql: Session, book: BooksAction):
+def create_book(sql: Session, book: BooksCreate):
     """
     Create a record of book with its Title
     """
@@ -32,7 +32,7 @@ def create_book(sql: Session, book: BooksAction):
     return new_book
 
 
-def update_book(sql: Session, book_id: int, book: BooksAction):
+def update_book(sql: Session, book_id: int, book: BooksUpdate):
     """
     Update a specific book
     """
@@ -41,6 +41,7 @@ def update_book(sql: Session, book_id: int, book: BooksAction):
     if old_data is not None:
         new_data = book.dict()
         old_data.Title = new_data["Title"]
+        old_data.AuthorId = new_data["AuthorId"]
 
         sql.commit()
 
