@@ -9,10 +9,8 @@ class CarsBase(BaseModel):
     """
     A schema class used to represent Cars table column values
     """
-    Id: Optional[int] = None
-    Name: str
-    Price: int = Field(..., gt=0,
-                       description="The price must be greated than zero")
+    Name: str = None
+    Price: int = None
 
     class Config:
         """
@@ -22,7 +20,7 @@ class CarsBase(BaseModel):
         orm_mode = True
 
 
-class CarActions(BaseModel):
+class CarsCreate(CarsBase):
     """
     A schema class used to represent column to create a new Car
     """
@@ -31,8 +29,28 @@ class CarActions(BaseModel):
                        description="The price must be greated than zero")
 
     class Config:
-        """
-        Instead of using name = data["Name"]
-        replace it with name = data.Name
-        """
+        """enable orm mode"""
+        orm_mode = True
+
+
+class CarsUpdate(CarsBase):
+    """
+    A schema class used to represent column to create a new Car
+    """
+    Name: Optional[str]
+    Price: Optional[int]
+
+    class Config:
+        """enable orm mode"""
+        orm_mode = True
+
+
+class CarsInDBBase(CarsBase):
+    """
+    A schema class used to represent car data based on its ID
+    """
+    Id: Optional[int] = None
+
+    class Config:
+        """enable orm mode"""
         orm_mode = True

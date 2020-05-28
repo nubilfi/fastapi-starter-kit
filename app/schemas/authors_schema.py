@@ -1,6 +1,7 @@
 """
 It is a Pydantic model for Authors
 """
+from typing import Optional
 from pydantic import BaseModel
 
 
@@ -8,8 +9,7 @@ class AuthorsBase(BaseModel):
     """
     A schema class used to represent Authors table column values
     """
-    AuthorId: int
-    Name: str
+    Name: Optional[str] = None
 
     class Config:
         """
@@ -19,15 +19,35 @@ class AuthorsBase(BaseModel):
         orm_mode = True
 
 
-class AuthorsAction(BaseModel):
+class AuthorsCreate(AuthorsBase):
     """
     A schema class used to represent column to create a new author
     """
     Name: str
 
     class Config:
-        """
-        Instead of using name = data["Name"]
-        replace it with name = data.Name
-        """
+        """enable orm mode"""
+        orm_mode = True
+
+
+
+class AuthorsUpdate(AuthorsBase):
+    """
+    A schema class used to represent column to create a new author
+    """
+    Name: str
+
+    class Config:
+        """enable orm mode"""
+        orm_mode = True
+
+
+class AuthorsInDBBase(AuthorsBase):
+    """
+    A schema class used to represent user data based on its ID
+    """
+    AuthorId: Optional[int] = None
+
+    class Config:
+        """enable orm mode"""
         orm_mode = True
