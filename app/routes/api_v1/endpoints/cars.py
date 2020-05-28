@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from starlette.status import HTTP_201_CREATED
 
 from app.controllers.cars_controller import get_cars, get_car, create_car, update_car, delete_car
-from app.schemas.cars_schema import CarsBase, CarActions
+from app.schemas.cars_schema import CarsInDBBase, CarsCreate, CarsUpdate
 from app.schemas.users_schema import UsersBase
 from app.settings.mysql_settings import SessionLocal
 from app.utils.auth import get_current_active_user
@@ -28,7 +28,7 @@ def db_session() -> Generator:
         dbsession.close()
 
 
-@router.get("/", response_model=List[CarsBase])
+@router.get("/", response_model=List[CarsInDBBase])
 def get_all_cars(
         sql: Session = Depends(db_session),
         current_user: UsersBase = Depends(get_current_active_user)
@@ -41,7 +41,7 @@ def get_all_cars(
     return result
 
 
-@router.get("/{car_id}", response_model=CarsBase)
+@router.get("/{car_id}", response_model=CarsInDBBase)
 def get_car_by_id(
         car_id: int = Path(..., title="The Id of the car to get", ge=0),
         sql: Session = Depends(db_session),
@@ -59,9 +59,9 @@ def get_car_by_id(
     return result
 
 
-@router.post("/", response_model=CarActions, status_code=HTTP_201_CREATED)
+@router.post("/", response_model=CarsCreate, status_code=HTTP_201_CREATED)
 def add_new_car(
-        newcar: CarActions,
+        newcar: CarsCreate,
         sql: Session = Depends(db_session),
         current_user: UsersBase = Depends(get_current_active_user)
 ):
@@ -78,9 +78,9 @@ def add_new_car(
     return result
 
 
-@router.put("/{car_id}", response_model=CarActions)
+@router.put("/{car_id}", response_model=CarsUpdate)
 def update_car_by_id(
-        car: CarActions,
+        car: CarsUpdate,
         car_id: int = Path(..., title="The Id of the car to be updated", ge=0),
         sql: Session = Depends(db_session),
         current_user: UsersBase = Depends(get_current_active_user)

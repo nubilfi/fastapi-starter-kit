@@ -8,7 +8,7 @@ from starlette.status import HTTP_201_CREATED
 
 from app.controllers.books_controller import (
     get_books, get_book, create_book, update_book, delete_book)
-from app.schemas.books_schema import BooksBase, BooksAction
+from app.schemas.books_schema import BooksInDBBase, BooksCreate, BooksUpdate
 from app.schemas.users_schema import UsersBase
 from app.settings.mysql_settings import SessionLocal
 from app.utils.auth import get_current_active_user
@@ -29,7 +29,7 @@ def db_session() -> Generator:
         dbsession.close()
 
 
-@router.get("/", response_model=List[BooksBase])
+@router.get("/", response_model=List[BooksInDBBase])
 def get_all_books(
         sql: Session = Depends(db_session),
         current_user: UsersBase = Depends(get_current_active_user)
@@ -42,7 +42,7 @@ def get_all_books(
     return result
 
 
-@router.get("/{book_id}", response_model=BooksBase)
+@router.get("/{book_id}", response_model=BooksInDBBase)
 def get_book_by_id(
         book_id: int = Path(..., title="The Id of the book to get", ge=0),
         sql: Session = Depends(db_session),
@@ -60,9 +60,9 @@ def get_book_by_id(
     return result
 
 
-@router.post("/", response_model=BooksAction, status_code=HTTP_201_CREATED)
+@router.post("/", response_model=BooksCreate, status_code=HTTP_201_CREATED)
 def add_new_book(
-        newbook: BooksAction,
+        newbook: BooksCreate,
         sql: Session = Depends(db_session),
         current_user: UsersBase = Depends(get_current_active_user)
 ):
@@ -79,9 +79,9 @@ def add_new_book(
     return result
 
 
-@router.put("/{book_id}", response_model=BooksAction)
+@router.put("/{book_id}", response_model=BooksUpdate)
 def update_book_by_id(
-        book: BooksAction,
+        book: BooksUpdate,
         book_id: int = Path(...,
                             title="The Id of the book to be updated", ge=0),
         sql: Session = Depends(db_session),
@@ -92,7 +92,7 @@ def update_book_by_id(
 
     - **book_id**: set the Id of the book, it's required
     - **Title**: must have a title
-    - **AuthorId**: set the Id of the author if you want to update it (optional field)
+    - **AuthorId**: set the Id of the author if you want to update it, it's required
     """
     if current_user.Status:
         raise HTTPException(status_code=400, detail="Inactive user")

@@ -8,7 +8,7 @@ from starlette.status import HTTP_201_CREATED
 
 from app.controllers.authors_controller import (
     get_authors, get_author, create_author, update_author, delete_author)
-from app.schemas.authors_schema import AuthorsBase, AuthorsAction
+from app.schemas.authors_schema import AuthorsInDBBase, AuthorsCreate, AuthorsUpdate
 from app.schemas.users_schema import UsersBase
 from app.settings.mysql_settings import SessionLocal
 from app.utils.auth import get_current_active_user
@@ -29,7 +29,7 @@ def db_session() -> Generator:
         dbsession.close()
 
 
-@router.get("/", response_model=List[AuthorsBase])
+@router.get("/", response_model=List[AuthorsInDBBase])
 def get_all_authors(
         sql: Session = Depends(db_session),
         current_user: UsersBase = Depends(get_current_active_user)
@@ -42,7 +42,7 @@ def get_all_authors(
     return result
 
 
-@router.get("/{author_id}", response_model=AuthorsBase)
+@router.get("/{author_id}", response_model=AuthorsInDBBase)
 def get_author_by_id(
         author_id: int = Path(..., title="The Id of the author to get", ge=0),
         sql: Session = Depends(db_session),
@@ -60,9 +60,9 @@ def get_author_by_id(
     return result
 
 
-@router.post("/", response_model=AuthorsAction, status_code=HTTP_201_CREATED)
+@router.post("/", response_model=AuthorsCreate, status_code=HTTP_201_CREATED)
 def add_new_author(
-        newauthor: AuthorsAction,
+        newauthor: AuthorsCreate,
         sql: Session = Depends(db_session),
         current_user: UsersBase = Depends(get_current_active_user)
 ):
@@ -78,9 +78,9 @@ def add_new_author(
     return result
 
 
-@router.put("/{author_id}", response_model=AuthorsAction)
+@router.put("/{author_id}", response_model=AuthorsUpdate)
 def update_author_by_id(
-        author: AuthorsAction,
+        author: AuthorsUpdate,
         author_id: int = Path(...,
                               title="The Id of the author to be updated", ge=0),
         sql: Session = Depends(db_session),
