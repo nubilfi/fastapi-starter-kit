@@ -16,7 +16,7 @@ def test_get_all_cars(
         client_target: TestClient,
         user_token_headers: Dict[str, str]
 ):
-    """should return a list of all cards record"""
+    """should return a list of all cars record"""
     res = client_target.get(f"{getenv('API_PREFIX')}/cars", headers=user_token_headers)
     cars = res.json()
 
@@ -72,6 +72,7 @@ def test_update_car(
     new_car = res.json()
     assert new_car["Name"] == updated_data["Name"]
     assert new_car["Price"] == updated_data["Price"]
+
 
 def test_delete_car_by_id(
         client_target: TestClient,
