@@ -18,8 +18,8 @@ def db_session() -> Generator:
     """
     Get database connection with DI (Dependencies Injection)
     """
+    dbsession = SessionLocal()
     try:
-        dbsession = SessionLocal()
         yield dbsession
     finally:
         dbsession.close()

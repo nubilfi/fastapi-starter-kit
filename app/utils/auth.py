@@ -28,8 +28,8 @@ def db_session() -> Generator:
     """
     Get database connection with DI (Dependencies Injection)
     """
+    dbsession = SessionLocal()
     try:
-        dbsession = SessionLocal()
         yield dbsession
     finally:
         dbsession.close()
@@ -112,7 +112,8 @@ def get_current_active_user(current_user: UsersBase = Depends(get_current_user))
 def verify_password_reset_token(token: str) -> Optional[str]:
     """validate user token to reset password"""
     try:
-        decoded_token = jwt.decode(token, getenv("SECRET_KEY"), algorithm=getenv("ALGORITHM"))
+        decoded_token = jwt.decode(token, getenv(
+            "SECRET_KEY"), algorithm=getenv("ALGORITHM"))
         return decoded_token["sub"]
     except PyJWTError:
         return None
