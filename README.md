@@ -10,8 +10,17 @@ Before runnig this app, please rename `.env.example` file to `.env` and update i
 
 ### Run the app
 
-After you installed the packages, run the migration first with `alembic upgrade head` command. Then you can finally run the app with `python app/server.py` and access it through the `PORT` that you defined in `.env` file.
+After you installed the packages, change `database` connection string in `alembic.ini` file before run the migration with `alembic upgrade head` command. Then you can finally run the app with `python app/server.py` and access it through the `PORT` that you defined in `.env` file.
+
+### Test
+
+After migration command, you'll get example tables created during migration. Please create a user from `/docs` with the following data:
+
+- username: johndoe
+- password: secret
+
+Then, you can run `pytest` command from root directory. FYI, without that user, the test will be fail because I hardcoded that user data inside `test_signin.py` file.
 
 ### Feedback
 
-Feel free to contact me, open PR or give some feedback about this repo, i'd appreciate it. 
+Feel free to contact me, open PR or give some feedback about this repo, i'd appreciate it.
