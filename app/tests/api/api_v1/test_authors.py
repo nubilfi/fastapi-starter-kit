@@ -20,7 +20,11 @@ def test_get_all_authors(
     authors = res.json()
 
     assert res.status_code == 200
-    assert authors
+
+    if authors:
+        assert authors
+    else:
+        assert len(authors) == 0
 
 
 def test_get_author_by_id(

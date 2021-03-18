@@ -21,7 +21,11 @@ def test_get_all_cars(
     cars = res.json()
 
     assert res.status_code == 200
-    assert cars
+
+    if cars:
+        assert cars
+    else:
+        assert len(cars) == 0
 
 
 def test_get_car_by_id(

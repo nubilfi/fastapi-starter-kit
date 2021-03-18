@@ -20,7 +20,11 @@ def test_get_books(
     books = res.json()
 
     assert res.status_code == 200
-    assert books
+
+    if books:
+        assert books
+    else:
+        assert len(books) == 0
 
 
 def test_get_book_by_id(
