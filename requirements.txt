@@ -35,7 +35,6 @@ python-dateutil==2.8.1
 python-dotenv==0.15.0
 python-editor==1.0.4
 python-multipart==0.0.5
-<<<<<<< HEAD
 requests==2.25.1
 six==1.15.0
 SQLAlchemy==1.4.0
@@ -45,15 +44,3 @@ typing-extensions==3.7.4.3
 urllib3==1.26.4
 uvicorn==0.13.4
 wrapt==1.12.1
-=======
-requests==2.23.0
-six==1.14.0
-SQLAlchemy==1.3.16
-starlette==0.13.2
-urllib3==1.25.9
-uvicorn==0.11.7
-uvloop==0.14.0
-wcwidth==0.1.9
-websockets==8.1
-wrapt==1.11.2
->>>>>>> origin/dependabot/pip/uvicorn-0.11.7
