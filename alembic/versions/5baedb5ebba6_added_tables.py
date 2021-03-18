@@ -46,7 +46,7 @@ def upgrade():
         sa.Column('Username', mysql.VARCHAR(length=32), nullable=True),
         sa.Column('Fullname', mysql.VARCHAR(length=150), nullable=True),
         sa.Column('Email', mysql.TEXT(), nullable=True),
-        sa.Column('Password', mysql.VARCHAR(length=32), nullable=True),
+        sa.Column('Password', mysql.VARCHAR(length=100), nullable=True),
         sa.Column('Status', sa.BOOLEAN(), server_default=sa.schema.DefaultClause("0")),
         sa.PrimaryKeyConstraint('UserId')
     )
