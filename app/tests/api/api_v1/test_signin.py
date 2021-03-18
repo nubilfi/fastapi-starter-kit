@@ -7,7 +7,10 @@ from fastapi.testclient import TestClient
 
 
 def test_access_token(client_target: TestClient) -> None:
-    """get access token with user data"""
+    """
+    get access token with user data
+    make sure the following user EXIST in user table
+    """
     login_data = {
         "username": "johndoe",
         "password": "secret"

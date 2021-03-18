@@ -6,13 +6,15 @@ from datetime import timedelta
 from typing import Generator, Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException, status
+from starlette.status import HTTP_201_CREATED
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.utils.auth import (
     authenticate_user, create_access_token, get_password_hash, verify_password_reset_token
 )
-from app.controllers.users_controller import check_user
+from app.controllers.users_controller import check_user, create_user
+from app.schemas.users_schema import UsersCreate
 from app.schemas.token_schema import Token
 from app.schemas.message_schema import Message
 from app.settings.mysql_settings import SessionLocal
@@ -90,3 +92,15 @@ def reset_password(
     sql.commit()
 
     return {"message": "Password update successfully"}
+
+
+@router.post("/register", status_code=HTTP_201_CREATED)
+def add_new_user(
+        newuser: UsersCreate,
+        sql: Session = Depends(db_session)
+):
+    """
+    Create new user
+    """
+    result = create_user(sql, user=newuser)
+    return result

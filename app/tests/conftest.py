@@ -29,4 +29,4 @@ def client_target() -> Generator:
 def user_token_headers(client_target: TestClient, sql_session: Session) -> Dict[str, str]:
     """fake user data auth"""
     return auth_token(
-        client=client_target, username="john", sql=sql_session)
+        client=client_target, username="johndoe", sql=sql_session)
