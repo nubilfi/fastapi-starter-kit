@@ -14,7 +14,7 @@ After you installed the packages, change `database` connection string in `alembi
 
 ### Test
 
-After migration command, you'll get example tables created during migration. Please create a user from `/docs` with the following data:
+After migration command, you'll get example tables created during migration. Please create a user from interactive API doc `url/docs` with the following data:
 
 - username: johndoe
 - password: secret
