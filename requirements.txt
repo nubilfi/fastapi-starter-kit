@@ -27,7 +27,7 @@ py==1.10.0
 pycodestyle==2.7.0
 pycparser==2.20
 pydantic==1.8.1
-PyJWT==2.0.1
+PyJWT==2.4.0
 pylint==2.7.2
 pyparsing==2.4.7
 pytest==6.2.2
